@@ -545,33 +545,37 @@ class RevProfanity:
             self.queue.finish()
             res = list(set(result_array.tolist()))
             res.remove(tuple([0, 0, 0, 0]))
-            try:
-                session = self.Session()
-                for r in res:
+            
+            session = self.Session()
+            for r in res:
+                try:
                     session.add(self.Collision(pk_hash=int(hashlib.md5(
                         bytes(str([r] + [self.start_percent, self.end_percent, addresses[ind]]),
-                              'utf8')).hexdigest(), 16) % 2 ** 63,
-                                               address=addresses[ind],
-                                               public_key=pub_key,
-                                               start_procentage=self.start_percent,
-                                               end_procentage=self.end_percent,
-                                               id_run=r[0],
-                                               iteration=r[1],
-                                               target_1=r[2],
-                                               target_2=r[3]))
+                            'utf8')).hexdigest(), 16) % 2 ** 63,
+                                            address=addresses[ind],
+                                            public_key=pub_key,
+                                            start_procentage=self.start_percent,
+                                            end_procentage=self.end_percent,
+                                            id_run=r[0],
+                                            iteration=r[1],
+                                            target_1=r[2],
+                                            target_2=r[3]))
                     session.commit()
+                except Exception as e:
+                    print(e)
+            try:
                 session.add(
                     self.Collision(pk_hash=int(hashlib.md5(
                         bytes(str([self.start_percent, self.end_percent, addresses[ind]]),
-                              'utf8')).hexdigest(), 16) % 2 ** 63,
-                                   address=addresses[ind],
-                                   public_key=pub_key,
-                                   start_procentage=self.start_percent,
-                                   end_procentage=self.end_percent,
-                                   id_run=0,
-                                   iteration=0,
-                                   target_1=0,
-                                   target_2=0))
+                                'utf8')).hexdigest(), 16) % 2 ** 63,
+                                    address=addresses[ind],
+                                    public_key=pub_key,
+                                    start_procentage=self.start_percent,
+                                    end_procentage=self.end_percent,
+                                    id_run=0,
+                                    iteration=0,
+                                    target_1=0,
+                                    target_2=0))
                 session.commit()
                 session.close()
                 print('Pct: ', round(ind / len(addresses), 2) * 100, '%')
