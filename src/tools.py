@@ -172,6 +172,8 @@ class RevProfanity:
 
     def __init__(self,
                  blockchain: str = 'ethereum'):
+        if 'DB' not in os.listdir():
+            os.mkdir('DB')
         self.engine = create_engine("sqlite:///DB/Profanity.db")
         self.Session = sessionmaker(bind=self.engine)
         self.Base.metadata.create_all(self.engine, checkfirst=True)
